@@ -1,0 +1,77 @@
+<app-header-breadcrumb></app-header-breadcrumb>
+<form #f="ngForm" disa autocomplete="off" (ngSubmit)="salvar(f)">
+          <p-panel header="Dados do Cidadão">
+            <div class="p-fluid p-formgrid p-grid p-justify-center p-align-center">
+              <div class="p-fluid p-formgrid p-grid p-col-12">
+                <div class="p-col-12 p-lg-12">
+                <div class="p-field-checkbox">
+                  <label>Tipo de Usuário *&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                  <p-radioButton name="identificado" value="1" disabled="true" (click)="onTipoPessoaFisica();" [(ngModel)]="manifestante.tipo"  inputId="identificado"></p-radioButton>
+                  <label>Pessoa Fisica</label>
+                    <p-radioButton name="identificado1" value="2" disabled="true" (click)="onTipoPessoaJuridica();"  [(ngModel)]="manifestante.tipo"  inputId="identificado1"></p-radioButton>
+                    <label>Pessoa Juridica</label>
+                </div>            
+              </div>
+              <div class="p-col-12 p-lg-6">
+                  <label>Solicitante *</label>
+                  <input pInputText type="text" name="nome" [(ngModel)]="manifestante.nome"
+                   #nome="ngModel" required minlength="5">
+              </div>            
+              <div class="p-col-12 p-lg-3">
+                <label>Tipo Documento *</label>
+                <p-dropdown inputId="codigoDocumento"  [disabled]="true" (onChange)="onMascara();" placeholder="Selecione o tipo de documento"  name="codigoDocumento" [options]="tipoDocumentos"
+              [(ngModel)]="manifestante.codigoDocumento" required
+                #codigoDocumento="ngModel" 
+             ></p-dropdown>
+            </div>   
+            <div class="p-col-12 p-lg-3">
+              <label>Número Documento *</label>
+            <input pInputText type="text" disabled="true"  name="numeroDocumento"
+            [ngModel]="manifestante.numeroDocumento" #numeroDocumento="ngModel">
+          </div>            
+          <div class="p-col-12 p-lg-3">
+    <label>UF</label>
+    <p-dropdown inputId="uf" placeholder="Selecione o tipo de documento"  name="uf" [options]="ufs"
+              [(ngModel)]="manifestante.uf" required
+                #uf="ngModel" 
+             ></p-dropdown>
+  </div>            
+  <div class="p-col-12 p-lg-6">
+    <label>Cidade</label>
+    <input pInputText type="text" name="cidade" [(ngModel)]="manifestante.cidade"
+     #cidade="ngModel">
+  </div>            
+  <div class="p-col-12 p-lg-3">
+    <label>Telefone</label>
+    <p-inputMask type="text" mask="(99)99999-9999"   name="telefone"
+    [ngModel]="manifestante.telefone" #telefone="ngModel"></p-inputMask>
+  </div>            
+  <div class="p-col-12 p-lg-12">
+    <label>Email *</label>
+    <input pInputText type="text" name="email" [(ngModel)]="manifestante.email"
+     #email="ngModel" required>
+     <label style="font-size: xx-small;">O endereço eletrônico é obrigatório por questões de sigilo e integridade de dados. Caso o usuário não tenha e-mail, poderá abrir solicitação através de carta ou atendimento presencial.</label>
+  </div>            
+  <div class="p-col-12 p-lg-12" style="font-size: small;">
+    <p-checkbox name="confirmaDados"  [(ngModel)]="manifestante.confirmaDados" inputId="sigilo"
+    [binary]="true" #confirmaDados="ngModel">
+  </p-checkbox>
+  <label>Seus dados serão tratados respeitando a Lei 13.719/2018 - Lei Geral de Proteção de Dados Pessoais - LGPD.</label>
+  </div>
+  <div class="p-col-12 p-lg-12" style="font-size: small;">
+    <p-checkbox name="confirmaDados" [disabled]="true"  [(ngModel)]="manifestante.confirmaDados" inputId="sigilo"
+    [binary]="true" #confirmaDados="ngModel">
+  </p-checkbox>
+  <label>Me responsabilizo pela veracidade dos dados informados nesse cadastro para efeito de pedido de infomação previsto na Lei Federal 12.527/2011.</label>&nbsp;
+  </div>  
+  </div>     
+              </div>  
+                                 
+            <div class="p-grid">
+              <div class="p-col-6">
+                <button pButton type="submit" label="Atualizar Cadastro" [disabled]="f.invalid"  class="ui-button-raised" 
+                 ></button>
+              </div>
+            </div>
+          </p-panel>
+        </form>

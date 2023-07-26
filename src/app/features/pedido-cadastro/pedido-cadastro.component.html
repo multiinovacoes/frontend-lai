@@ -1,0 +1,252 @@
+<app-header-breadcrumb></app-header-breadcrumb>
+<form #f="ngForm" disa autocomplete="off" (ngSubmit)="salvar(f)">
+  <div [class.hidden]="!showLoaderDialog" class="np-loader">
+    <p-progressSpinner strokeWidth="5"></p-progressSpinner>
+  </div>
+          <p-panel header="Cadastro do Pedido de Informação">
+            <div class="p-fluid p-formgrid p-grid p-justify-center p-align-center">
+              <div class="p-col-12 p-lg-3">
+                <label>Protocolo do Pedido</label>
+                <input pInputText type="text" style="background-color: dimgray; color: aliceblue;" readonly name="numeroProtocolo" [(ngModel)]="pedido.numeroProtocolo"
+                 #numeroProtocolo="ngModel">
+            </div>            
+            <div class="p-col-12 p-lg-5">
+              <label>Solicitante *</label>
+              <input pInputText type="text" disabled="true" name="nome" [(ngModel)]="user.nome"
+               #nome="ngModel" required minlength="5">
+          </div>            
+          <div class="p-col-12 p-lg-2">
+              <label>Data do Pedido</label>
+              <input type="text" name="data" readonly style="background-color: dimgray; color: aliceblue;"
+              [ngModel]="pedido.data | date: 'dd-MM-yyyy'" #data="ngModel"
+              (ngModelChange)="pedido.data = $event" pInputText>
+            </div>            
+            <div class="p-col-12 p-lg-2">
+              <label>Prazo Resposta</label>
+              <input type="text" name="dataPrazo" readonly style="background-color: dimgray; color: aliceblue;"
+              [ngModel]="pedido.dataPrazo | date: 'dd-MM-yyyy'" #dataPrazo="ngModel"
+              (ngModelChange)="pedido.dataPrazo = $event" pInputText>
+            </div>  
+            <div class="p-col-12 p-lg-3">
+              <label>Status do Pedido</label>
+              <p-dropdown inputId="statusAtendimento"  [disabled]="true"   name="statusAtendimento" [options]="listaStatusAtendimento"
+              [(ngModel)]="pedido.statusAtendimento" required
+                #statusAtendimento="ngModel" 
+             ></p-dropdown>
+            </div>                           
+            <div class="p-col-12 p-lg-3">
+                <label>Intituição *</label>
+                <p-dropdown inputId="instituicao" (onChange)="onAreas();"  placeholder="Selecione a instituição"  name="instituicao" [options]="listaInstituicoes"
+              [(ngModel)]="pedido.instituicao" required
+                #instituicao="ngModel" 
+             ></p-dropdown>
+            </div> 
+            <div class="p-col-12 p-lg-6">
+              <label>Área de Atendimento *</label>
+              <p-dropdown inputId="area" placeholder="Selecione a área"  name="area" [options]="listaAreas"
+            [(ngModel)]="pedido.area" required
+              #area="ngModel" 
+           ></p-dropdown>
+          </div> 
+          <div class="p-col-12 p-lg-12">
+                <label>Descrição do Pedido *</label>
+                <textarea rows="6" cols="50" name="descricao" [(ngModel)]="pedido.descricao"
+                  #descricao="ngModel" required="true" pInputTextarea></textarea>
+              </div>
+
+              <div class="p-col-12 p-lg-12"  [hidden]="this.pedido.resposta === null">
+                <label>Resposta do Pedido</label>
+                <div [hidden]="this.pedido.resposta === ''">
+                  <p-editor [(ngModel)]="pedido.resposta"  [readonly]="true" 
+                  name="resposta"
+                  [style]="{'height':'130px'}"></p-editor>
+                  </div>
+                  <div [hidden]="this.pedido.resposta !== ''">
+                     <b>** Seu pedido ainda está em análise, aguarde a resposta</b>
+                  </div>
+              </div>
+            </div>  
+
+            <div class="p-col-12 p-lg-12" [hidden]="recursos === null">
+              <label>Recursos do Pedido</label>
+              <p-table  [value]="recursos" styleClass="p-datatable-sm p-datatable-striped" #tabela>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="font-size: small; text-align: center;">Data Recurso</th>
+            <th style="font-size: small;">Justificativa</th>
+            <th style="font-size: small; text-align: center;">Data Prazo</th>
+            <th style="font-size: small; text-align: center;">Tipo Recurso</th>
+            <th style="font-size: small; text-align: center;">Status Recurso</th>
+            <th style="font-size: small;"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-recurso>
+            <tr>
+                <td style="font-size: small; text-align: center;">
+                    {{recurso.dataRecurso | date: 'dd-MM-yyyy'}}
+                </td>                
+                <td style="font-size: small;">
+                    {{recurso.justificativa}}
+                </td>
+                <td style="font-size: small; text-align: center;">
+                  {{recurso.dataPrazo | date: 'dd-MM-yyyy'}}
+                </td>
+                <td style="font-size: small; text-align: center;">
+                  {{recurso.descricaoTipo}}
+                </td>
+                <td style="font-size: small; text-align: center;">
+                  {{recurso.descricaoStatus}}
+                </td>
+                <td style="font-size: small;">
+                  <a pButton icon="pi pi-folder-open" pTooltip="Editar" tooltipPosition="top"
+                  (click)="editarRecurso(recurso.id)"></a>
+              </td>          
+              </tr>
+        </ng-template>
+    </p-table>
+            </div>
+                                 
+            <p-footer>
+              <div class="p-fluid p-formgrid p-grid p-justify-center p-align-center">
+                <div class="p-fluid p-col-12 p-lg-3">
+              <button pButton type="submit" label="Salvar Pedido" [disabled]="f.invalid || this.atendimento.salvo==true"  class="p-button-raised" pRipple 
+              ></button>
+              </div>
+              <div class=" p-fluid p-col-12 p-lg-3">
+              <button pButton pRipple type="button" label="Abrir Recurso" [disabled]="this.pedido.id===null"  (click)="abrirRecurso()"  class="p-button-raised p-button-secondary" 
+              ></button>
+              </div>
+              <div class="p-col-12 p-lg-3">
+              <button pButton type="button" label="Anexar" class="ui-button-raised"  [disabled]="f.invalid || this.atendimento.salvo==false || pedido.statusAtendimento === 2" (click)="showAnexo()"></button>
+              </div>
+              <div class="p-col-12 p-lg-3">
+           <button pButton type="button" label="Voltar" class="ui-button-raised"  (click)="back()"></button>
+           </div>
+           </div>
+               * Campos obrigatórios
+            </p-footer>            
+          </p-panel>
+        </form>
+
+        <p-dialog header="Anexar Arquivo"
+        position="top" [(visible)]="displayModal"
+        [style]="{width: '50vw'}">
+        <form id="myFormAnexo" name="myFormAnexo" #myFormAnexo="ngForm" autocomplete="off">
+          <div class="card">
+            <div class="p-fluid p-formgrid p-grid">
+              <div class="p-field p-col-12">
+                    <p-fileUpload #fileUpload name="anexo" [auto]="true" id="anexo"
+                    invalidFileSizeMessageDetail="O tamanho máximo permitido de arquivos é de 10"
+                     [customUpload]="true" chooseLabel="Selecione o arquivo"   (uploadHandler)="carregaArquivo($event)"
+                     accept="image/*,application/*" [maxFileSize]="5000000">
+                 
+                  </p-fileUpload>
+                </div>
+                <div class="p-field p-col-12">
+                <p-table [value]="anexos" [responsive]="true">
+                  <ng-template pTemplate="header">
+                    <tr>  
+                      <th style="width: 1px;"></th>
+                      <th style="width: 100px;">Nome do arquivo</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-anexo>
+                    <tr>
+                      <td>
+                        <p-radioButton [(name)]="anexo.id" [(value)]="anexo.id" [(ngModel)]="idAnexoSelecao"
+                          [(inputId)]="anexo.id"></p-radioButton>
+                      </td>
+                      <td>
+                        {{anexo.nomeArquivo}}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+                </div>
+              </div>
+          </div>
+          <br>
+          <button pButton type="button"  (click)="excluirAnexo(idAnexoSelecao)"
+          icon="pi pi-external-link" [disabled]="idAnexoSelecao == null" label="Excluir"></button>&nbsp;
+          <button pButton type="button" label="Fechar" class="ui-button-secondary prime-button" (click)="onClose()"></button>
+        </form>
+      </p-dialog>
+      
+    
+      <p-dialog [header]="headerRecurso"
+      position="top" [(visible)]="displayModalRecurso"
+      [style]="{width: '50vw'}">
+      <form id="myFormRecurso" name="myFormRecurso" #myFormRecurso="ngForm" autocomplete="off" (ngSubmit)="salvarRecurso(myFormRecurso)">
+        <div [hidden]="recurso.mensagem === null">
+          <div class="p-col-12 p-lg-12">
+            <label>{{recurso.mensagem}}</label>
+          </div>    
+          <div class="p-col-12 p-lg-12">
+            <button pButton type="button" label="Fechar" class="p-button-raised" (click)="onCloseRecurso()" pRipple></button>        
+          </div>
+          </div>
+        <div [hidden]="recurso.mensagem !== null">
+        <div class="card">
+          <div class="p-fluid p-formgrid p-grid">
+
+                <div class="p-col-12 p-lg-4">
+                  <label>Data do Recurso</label>
+                  <input type="text" name="dataRecurso" readonly style="background-color: dimgray; color: aliceblue;"
+                  [ngModel]="recurso.dataRecurso | date: 'dd-MM-yyyy'" #dataRecurso="ngModel"
+                  (ngModelChange)="recurso.dataRecurso = $event" pInputText>
+                </div>            
+
+                <div class="p-col-12 p-lg-4">
+                  <label>Prazo Resposta</label>
+                  <input type="text" name="dataPrazo" readonly style="background-color: dimgray; color: aliceblue;"
+                  [ngModel]="recurso.dataPrazo | date: 'dd-MM-yyyy'" #dataPrazo="ngModel"
+                  (ngModelChange)="recurso.dataPrazo = $event" pInputText>
+                </div>  
+
+                <div class="p-col-12 p-lg-4">
+                  <label>Tipo de Recurso</label>
+                  <input type="text" name="descricaoTipo" readonly style="background-color: dimgray; color: aliceblue;"
+                  [ngModel]="recurso.descricaoTipo" #descricaoTipo="ngModel"
+                  pInputText>
+                </div>  
+                <div class="p-col-12 p-lg-6" [hidden]="recurso.dataResposta === null">
+                  <label>Data Resposta</label>
+                  <input type="text" name="dataResposta" readonly style="background-color: dimgray; color: aliceblue;"
+                  [ngModel]="recurso.dataResposta | date: 'dd-MM-yyyy'" #dataResposta="ngModel"
+                  (ngModelChange)="recurso.dataResposta = $event" pInputText>
+                </div>  
+                <div class="p-col-12 p-lg-6">
+                  <label>Status</label>
+                  <input type="text" name="descricaoStatus" readonly style="background-color: dimgray; color: aliceblue;"
+                  [ngModel]="recurso.descricaoStatus" #descricaoStatus="ngModel"
+                   pInputText>
+                </div>  
+                <div class="p-col-12 p-lg-12">
+                  <label>Justificativa do Recurso *</label>
+                  <textarea rows="6" cols="50" name="justificativa" [(ngModel)]="recurso.justificativa"
+                    #justificativa="ngModel" required="true" pInputTextarea></textarea>
+                </div>
+
+                <div class="p-col-12 p-lg-12" [hidden]="recurso.dataResposta === null">
+                  <label>Resposta do Recurso *</label>
+                  <p-editor [(ngModel)]="recurso.respostaRecurso"
+                  name="respostaRecurso" readonly="true"
+                  required
+                  [style]="{'height':'130px'}"></p-editor>
+                </div>
+
+                <div class="p-col-12 p-lg-6">
+                <button pButton type="submit" label="Salvar Recurso" [disabled]="recurso.id !== null" class="p-button-raised" pRipple 
+                ></button>        
+                </div>
+                <div class="p-col-12 p-lg-6">
+                <button pButton type="button" label="Fechar" class="p-button-raised" (click)="onCloseRecurso()" pRipple></button>        
+                </div>
+            </div>
+        </div>
+        </div>
+        <br>
+      </form>
+    </p-dialog>
+
+        

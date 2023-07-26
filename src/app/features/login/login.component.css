@@ -1,0 +1,18 @@
+.language-menu {
+    position: absolute;
+    right: 0px;
+    padding: 10px;
+}
+
+.fontcorAzulLarge{
+    color: #0011ff;
+}
+
+.fontcorAzul{
+    color: #0084ff;
+    font-size: small;
+}
+
+.backgroundcorAzul{
+    color: #0084ff;
+}

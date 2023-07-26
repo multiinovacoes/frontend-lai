@@ -1,0 +1,118 @@
+<div class="user-regisration">
+  <div class="p-fluid p-formgrid p-grid p-justify-center p-align-center" style="height:100%">
+    <div class="p-lg-8">
+      <form #f="ngForm" autocomplete="off" (ngSubmit)="onClickLogin(f)">
+        <p-panel header="Registrar Cidadão">
+          <div class="p-fluid p-formgrid p-grid p-justify-center p-align-center">
+            <div>
+              <img src="assets/images/logo_sesi_senai.png" class="login-logo">
+            </div>
+            </div>
+            <div class="p-fluid p-formgrid p-grid p-col-12">
+            <div class="p-col-12 p-lg-12">
+              <div class="p-field-checkbox">
+                <label>Tipo de Cidadão *&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <p-radioButton name="identificado" value="1" (click)="onTipoPessoaFisica();"  [(ngModel)]="manifestante.tipo"  inputId="identificado"></p-radioButton>
+                <label>Pessoa Fisica</label>
+                  <p-radioButton name="identificado1" value="2" (click)="onTipoPessoaJuridica();" [(ngModel)]="manifestante.tipo"  inputId="identificado1"></p-radioButton>
+                  <label>Pessoa Juridica</label>
+              </div>            
+            </div>
+            <div class="p-fluid p-formgrid p-grid p-col-12">
+            <div class="p-col-12 p-lg-6">
+                <label>Nome Completo *</label>
+                <input pInputText type="text" name="nome"  [(ngModel)]="manifestante.nome"
+                 #nome="ngModel" required minlength="5">
+            </div>            
+            <div class="p-col-12 p-lg-3">
+              <label>Tipo Documento *</label>
+              <p-dropdown inputId="codigoDocumento" (onChange)="onMascara();" placeholder="Selecione o tipo de documento"  name="codigoDocumento" [options]="tipoDocumentos"
+            [(ngModel)]="manifestante.codigoDocumento" required
+              #codigoDocumento="ngModel" 
+           ></p-dropdown>
+          </div>   
+          <div class="p-col-12 p-lg-3">
+            <label>Número Documento *</label>
+            <p-inputMask type="text" mask="999.999.999-99" [hidden]="mascaraCPF"  name="numeroDocumento"
+            [ngModel]="manifestante.numeroDocumento" #numeroDocumento="ngModel" required=""></p-inputMask>
+            <p-inputMask type="text" mask="99.999.999/9999-99" [hidden]="mascaraCNPJ"  name="numeroDocumento"
+            [ngModel]="manifestante.numeroDocumento" #numeroDocumento="ngModel" required=""></p-inputMask>
+            <input pInputText type="text"  [hidden]="mascara"  name="numeroDocumento"
+            [ngModel]="manifestante.numeroDocumento" #numeroDocumento="ngModel" required="">
+        </div>  
+        </div>   
+        <div class="p-fluid p-formgrid p-grid p-col-12">       
+        <div class="p-col-12 p-lg-3">
+  <label>UF</label>
+  <p-dropdown inputId="uf" placeholder="Selecione o tipo de documento"  name="uf" [options]="ufs"
+            [(ngModel)]="manifestante.uf" 
+              #uf="ngModel" 
+           ></p-dropdown>
+</div>            
+<div class="p-col-12 p-lg-3">
+  <label>Cidade</label>
+  <input pInputText type="text" name="cidade" [(ngModel)]="manifestante.cidade"
+   #cidade="ngModel">
+</div>            
+<div class="p-col-12 p-lg-3">
+  <label>Telefone </label>
+  <p-inputMask type="text" mask="(99)99999-9999"   name="telefone"
+  [ngModel]="manifestante.telefone" #telefone="ngModel"></p-inputMask>
+</div>            
+<div class="p-col-12 p-lg-3">
+  <label>Origem do Contato *</label>
+  <p-dropdown inputId="origemContato" placeholder="Selecione o tipo de documento"  name="origemContato" [options]="origensContato"
+            [(ngModel)]="manifestante.origemContato" required
+              #origemContato="ngModel" 
+           ></p-dropdown>
+</div> 
+</div>
+<div class="p-fluid p-formgrid p-grid p-col-12">           
+<div class="p-col-12 p-lg-6">
+  <label>Email *</label>
+
+  <input id="email" type="email" required name="email" [(ngModel)]="manifestante.email" email
+  #email="ngModel" pInputText>
+  <div *ngIf="email.invalid && email.touched"
+  style="color: red;">Informe um e-mail válido</div>
+  <label style="font-size: xx-small;">O endereço eletrônico é obrigatório por questões de sigilo e integridade de dados. Caso o usuário não tenha e-mail, poderá abrir solicitação através de carta ou atendimento presencial.</label>
+</div>            
+<div class="p-col-12 p-lg-6">
+  <label>Senha *</label>
+  <input pInputText type="password" name="senha" [disabled]="manifestante.id !== null" [(ngModel)]="manifestante.senha"
+   #senha="ngModel" required minlength="6">
+   <label style="font-size: xx-small;">A senha deverá obedecer aos seguintes critérios: Deve ter no mínimo 6 caracteres e conter números ou letras.</label>
+</div>  
+</div>
+<div class="p-fluid p-formgrid p-grid p-col-12">               
+<div class="p-col-12 p-lg-6" style="font-size: small;">
+  <p-checkbox name="confirmaDados"   [(ngModel)]="manifestante.confirmaDados" inputId="sigilo"
+  [binary]="true" #confirmaDados="ngModel" required="true">
+</p-checkbox>
+<label>Seus dados serão tratados respeitando a Lei 13.719/2018 - Lei Geral de Proteção de Dados Pessoais - LGPD.</label>
+</div>
+<div class="p-col-12 p-lg-6" style="font-size: small;">
+  <p-checkbox name="confirmaDados1" [(ngModel)]="manifestante.confirmaDados1" inputId="sigilo"
+  [binary]="true" #confirmaDados1="ngModel" required="true">
+</p-checkbox>
+<label>Me responsabilizo pela veracidade dos dados informados nesse cadastro para efeito de pedido de infomação previsto na Lei Federal 12.527/2011.</label>&nbsp;
+</div>     
+</div>  
+          </div>  
+                               
+          <div class="p-fluid p-formgrid p-grid p-justify-center p-align-center">
+            <div class="p-fluid p-col-12 p-lg-6">
+              <button pButton type="submit" label="Cadastrar" [disabled]="f.invalid || manifestante.confirmaDados===false || manifestante.confirmaDados1===false"  class="ui-button-raised" 
+               ></button>
+            </div>
+            <div class="p-fluid p-col-12 p-lg-6">
+              <button pButton type="button"  (click)="onClickGoToLogin();"  label="Login" class="ui-button-raised"
+                ></button>
+            </div>
+          </div>
+        </p-panel>
+   
+      </form>
+    </div>
+  </div>
+</div>
